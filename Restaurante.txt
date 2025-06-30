@@ -1,0 +1,67 @@
+Criação do banco de dados (se necessário)
+CREATE DATABASE sistema_pedidos_restaurante;
+USE sistema_pedidos_restaurante;
+
+CREATE TABLE Cliente (
+    CPF INT PRIMARY KEY,
+    Nome VARCHAR(45) NOT NULL,
+    Idade INT,
+    Sexo VARCHAR(45),
+    Telefone INT,
+    Email VARCHAR(45)
+);
+
+CREATE TABLE Funcionário (
+    idFuncionário INT PRIMARY KEY,
+    Nome VARCHAR(45) NOT NULL,
+    Sexo VARCHAR(45),
+    Cargo VARCHAR(45),
+    Salário DECIMAL(10,2),
+    Data_contratação DATE
+);
+
+CREATE TABLE Bebidas (
+    cod_barras INT PRIMARY KEY,
+    quantidade VARCHAR(45),
+    fabricação VARCHAR(45),
+    validade VARCHAR(45)
+);
+
+CREATE TABLE Alimentos (
+    cod_barras INT PRIMARY KEY,
+    quantidade INT,
+    fabricação DATE,
+    validade DATE
+);
+
+CREATE TABLE Estoque (
+    idEstoque INT PRIMARY KEY,
+    quant_alimentos INT,
+    Vencimento DATE,
+    descrição VARCHAR(45),
+    Bebidas_cod_barras INT,
+    Alimentos_cod_barras INT,
+    FOREIGN KEY (Bebidas_cod_barras) REFERENCES Bebidas(cod_barras),
+    FOREIGN KEY (Alimentos_cod_barras) REFERENCES Alimentos(cod_barras)
+);
+
+CREATE TABLE Pedido (
+    idPedido INT PRIMARY KEY,
+    Restaurante_CNPJ INT,
+    Estoque_idEstoque INT,
+    Cliente_CPF INT,
+    Funcionário_idFuncionário INT,
+    FOREIGN KEY (Estoque_idEstoque) REFERENCES Estoque(idEstoque),
+    FOREIGN KEY (Cliente_CPF) REFERENCES Cliente(CPF),
+    FOREIGN KEY (Funcionário_idFuncionário) REFERENCES Funcionário(idFuncionário),
+    Data_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Status VARCHAR(20) DEFAULT 'Pendente'
+);
+
+CREATE INDEX idx_cliente_nome ON Cliente(Nome);
+CREATE INDEX idx_funcionario_cargo ON Funcionário(Cargo);
+CREATE INDEX idx_pedido_cliente ON Pedido(Cliente_CPF);
+CREATE INDEX idx_pedido_funcionario ON Pedido(Funcionário_idFuncionário);
+CREATE INDEX idx_estoque_vencimento ON Estoque(Vencimento);
+CREATE INDEX idx_estoque_bebidas ON Estoque(Bebidas_cod_barras);
+CREATE INDEX idx_estoque_alimentos ON Estoque(Alimentos_cod_barras);
